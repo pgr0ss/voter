@@ -1,6 +1,8 @@
 # voter
 
-FIXME
+[![Build Status](https://travis-ci.org/pgr0ss/voter.png)](https://travis-ci.org/pgr0ss/voter)
+
+A simple app which let's a group add and vote on topics.
 
 ## Prerequisites
 
