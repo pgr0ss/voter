@@ -14,4 +14,7 @@
      (form-to [:post "/topics"]
               (label "topic" "Topic:")
               (text-field "topic")
-              (submit-button "Add"))]))
+              (submit-button "Add"))
+     [:p "Delete Topics:"]
+     (form-to [:delete "/topics"]
+              (submit-button "Delete All"))]))
