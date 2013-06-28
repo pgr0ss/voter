@@ -8,5 +8,9 @@
 
 (defn create [request]
   (let [topic-text (-> request :params :topic)]
-    (topic/create topic-text))
+    (topic/create! topic-text))
+  (response/redirect "/"))
+
+(defn delete [request]
+  (topic/delete-all!)
   (response/redirect "/"))

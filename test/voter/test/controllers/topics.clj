@@ -14,4 +14,11 @@
     (let [response (app (request :post "/topics" {:topic "topic one"}))]
       (is (= (:status response) 302))
       (is (= (get (:headers response) "Location") "/"))
-      (is (= ["topic one"] (topic/all))))))
+      (is (= ["topic one"] (topic/all)))))
+
+  (testing "delete"
+    (topic/create! "junk")
+    (let [response (app (request :delete "/topics"))]
+      (is (= (:status response) 302))
+      (is (= (get (:headers response) "Location") "/"))
+      (is (= [] (topic/all))))))

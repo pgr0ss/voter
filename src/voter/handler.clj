@@ -7,6 +7,7 @@
 (defroutes app-routes
   (GET "/" [] topics/index)
   (POST "/topics" [] topics/create)
+  (DELETE "/topics" [] topics/delete)
   (route/resources "/")
   (route/not-found "Not Found"))
 

@@ -5,8 +5,8 @@
 (defn all []
   @topics-list)
 
-(defn create [text]
+(defn create! [text]
   (swap! topics-list conj text))
 
-(defn delete-all []
+(defn delete-all! []
   (reset! topics-list []))
