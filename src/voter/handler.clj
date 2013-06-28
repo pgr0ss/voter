@@ -2,10 +2,11 @@
   (:use compojure.core)
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
-            [voter.views.topics :as topics]))
+            [voter.controllers.topics :as topics]))
 
 (defroutes app-routes
-  (GET "/" [] (topics/index))
+  (GET "/" [] topics/index)
+  (POST "/topics" [] topics/create)
   (route/resources "/")
   (route/not-found "Not Found"))
 
