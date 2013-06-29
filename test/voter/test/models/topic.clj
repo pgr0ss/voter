@@ -1,7 +1,7 @@
 (ns voter.test.models.topic
   (:use clojure.test)
   (:require [voter.test.helpers :as helpers]
-             voter.models.topic :as topic]))
+            [voter.models.topic :as topic]))
 
 (use-fixtures :each helpers/clear-topics)
 
