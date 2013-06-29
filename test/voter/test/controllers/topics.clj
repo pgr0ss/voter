@@ -2,23 +2,32 @@
   (:use clojure.test
         ring.mock.request
         voter.handler)
-  (:require [voter.models.topic :as topic]))
+  (:require [voter.test.helpers :as helpers]
+            [voter.models.topic :as topic]))
 
-(deftest topics
-  (testing "index"
-    (let [response (app (request :get "/"))]
-      (is (= (:status response) 200))
-      (is (true? (.contains (:body response) "List of Topics")))))
+(use-fixtures :each helpers/clear-topics)
 
-  (testing "create"
-    (let [response (app (request :post "/topics" {:topic "topic one"}))]
-      (is (= (:status response) 302))
-      (is (= (get (:headers response) "Location") "/"))
-      (is (= ["topic one"] (topic/all)))))
+(deftest index
+  (let [response (app (request :get "/"))]
+    (is (= (:status response) 200))
+    (is (true? (.contains (:body response) "List of Topics")))))
 
-  (testing "delete"
-    (topic/create! "junk")
-    (let [response (app (request :delete "/topics"))]
-      (is (= (:status response) 302))
-      (is (= (get (:headers response) "Location") "/"))
-      (is (= [] (topic/all))))))
+(deftest create
+  (let [response (app (request :post "/topics" {:topic "topic one"}))]
+    (is (= (:status response) 302))
+    (is (= (get (:headers response) "Location") "/"))
+    (is (= [{:id 1 :text "topic one" :votes 1}] (topic/all)))))
+
+(deftest vote
+  (topic/create! "one")
+  (let [response (app (request :post (str "/topics/1/vote")))]
+    (is (= (:status response) 302))
+    (is (= (get (:headers response) "Location") "/"))
+    (is (= 2 (:votes (first (topic/all)))))))
+
+(deftest delete
+  (topic/create! "junk")
+  (let [response (app (request :delete "/topics"))]
+    (is (= (:status response) 302))
+    (is (= (get (:headers response) "Location") "/"))
+    (is (= [] (topic/all)))))

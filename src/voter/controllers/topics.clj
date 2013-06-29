@@ -14,3 +14,8 @@
 (defn delete [request]
   (topic/delete-all!)
   (response/redirect "/"))
+
+(defn vote [request]
+  (let [id (read-string (-> request :params :id))]
+    (topic/vote! id))
+  (response/redirect "/"))

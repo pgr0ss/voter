@@ -17,7 +17,10 @@
        [:h2 "List of Topics"]
        [:ul
         (for [topic (topic/all)]
-          [:li topic])]
+          (let [{:keys [id text votes]} topic]
+            [:li (format "%s (votes: %s)" text votes)
+             (form-to [:post (format "/topics/%s/vote" id)]
+                      [:button.btn {:type "submit"} "Vote"])]))]
        (form-to [:post "/topics"]
         [:fieldset
          [:legend "Enter A New Topic:"]
