@@ -3,5 +3,5 @@
 
 (defn clear-topics [f]
   (topic/delete-all!)
-  (topic/reset-id!)
+  (topic/reset-id-counter-for-testing!)
   (f))

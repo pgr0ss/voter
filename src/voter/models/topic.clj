@@ -9,13 +9,20 @@
 (defn create! [text]
   (let [id (swap! topic-id-counter inc)
         topic {:id id :text text :votes 1}]
-    (swap! topics-by-id assoc id topic)))
+    (swap! topics-by-id assoc id topic)
+    topic))
 
 (defn delete-all! []
   (reset! topics-by-id {}))
 
-(defn reset-id! []
+(defn reset-id-counter-for-testing! []
   (reset! topic-id-counter 0))
+
+(defn- reset-votes [topics-map]
+  (into {} (map (fn [[id topic]] [id (assoc topic :votes 0)]) topics-map)))
+
+(defn reset-votes! []
+  (swap! topics-by-id reset-votes))
 
 (defn- increment-vote [topics-map id]
   (let [topic (get topics-map id)

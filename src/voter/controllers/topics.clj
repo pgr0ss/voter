@@ -15,6 +15,10 @@
   (topic/delete-all!)
   (response/redirect "/"))
 
+(defn reset-votes [request]
+  (topic/reset-votes!)
+  (response/redirect "/"))
+
 (defn vote [request]
   (let [id (read-string (-> request :params :id))]
     (topic/vote! id))

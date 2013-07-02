@@ -9,6 +9,7 @@
   (POST "/topics" [] topics/create)
   (POST "/topics/:id/vote" [] topics/vote)
   (DELETE "/topics" [] topics/delete)
+  (DELETE "/topics/votes" [] topics/reset-votes)
   (route/resources "/")
   (route/not-found "Not Found"))
 

@@ -29,5 +29,7 @@
          [:button.btn {:type "submit"} "Add"]])
        (form-to [:delete "/topics"]
          [:fieldset
-          [:legend "Delete All Topics:"]
-          [:button.btn {:type "submit"} "Delete All"]])]]))
+          [:button.btn {:type "submit"} "Delete All Topics"]])
+      (form-to [:delete "/topics/votes"]
+         [:fieldset
+          [:button.btn {:type "submit"} "Reset Votes"]])]]))

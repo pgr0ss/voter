@@ -31,3 +31,14 @@
     (is (= (:status response) 302))
     (is (= (get (:headers response) "Location") "/"))
     (is (= [] (topic/all)))))
+
+(deftest reset-votes
+  (let [topic-one (topic/create! "one")
+        topic-two (topic/create! "two")]
+    (topic/vote! (:id topic-one))
+    (topic/vote! (:id topic-two))
+    (is (= [2 2] (map :votes (topic/all))))
+    (let [response (app (request :delete "/topics/votes"))]
+      (is (= (:status response) 302))
+      (is (= (get (:headers response) "Location") "/"))
+      (is (= [0 0] (map :votes (topic/all)))))))

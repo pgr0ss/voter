@@ -24,3 +24,14 @@
   (topic/create! "one")
   (topic/delete-all!)
   (is (= [] (topic/all))))
+
+(deftest reset-votes
+  (let [topic-one (topic/create! "one")
+        topic-two (topic/create! "two")]
+    (topic/vote! (:id topic-one))
+    (topic/vote! (:id topic-one))
+    (topic/vote! (:id topic-two))
+    (is (= [3 2] (map :votes (topic/all))))
+    (topic/reset-votes!)
+    (is (= [0 0] (map :votes (topic/all))))))
+
