@@ -1,5 +1,6 @@
 (ns voter.test.helpers
-  (:require [voter.models.topic :as topic]
+  (:require [voter.handler :as handler]
+            [voter.models.topic :as topic]
             [voter.db.config :as config]
             [korma.db :as db]))
 

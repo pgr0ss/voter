@@ -7,10 +7,7 @@
 (defn- user [email]
   (if email
     [:h4 (str "Logged in as: " email)
-     [:a.btn {:href "/logout"} "Logout"]]
-    (form-to [:post "/login"]
-             [:input {:type "hidden" :name "identifier" :value "https://www.google.com/accounts/o8/id"}]
-             [:button.btn {:type "submit"} "Login with Google"])))
+     [:a.btn {:href "/logout"} "Logout"]]))
 
 (defn index [email]
   (html

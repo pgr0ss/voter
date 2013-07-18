@@ -12,17 +12,17 @@
 (defn create [request]
   (let [topic-text (-> request :params :topic)]
     (topic/create! topic-text))
-  (response/redirect "/"))
+  (response/redirect "/topics"))
 
 (defn delete [request]
   (topic/delete-all!)
-  (response/redirect "/"))
+  (response/redirect "/topics"))
 
 (defn reset-votes [request]
   (topic/reset-votes!)
-  (response/redirect "/"))
+  (response/redirect "/topics"))
 
 (defn vote [request]
   (let [id (read-string (-> request :params :id))]
     (topic/vote! id))
-  (response/redirect "/"))
+  (response/redirect "/topics"))

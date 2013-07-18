@@ -5,14 +5,24 @@
             [cemerick.friend :as friend]
             [cemerick.friend.openid :as openid]
             [ring.util.response :as response]
-            [voter.controllers.topics :as topics]))
+            [voter.controllers.topics :as topics]
+            [voter.views.login :as login]))
+
+(defn authorize-routes [routes]
+  (if (System/getProperty "skip-friend-authorization")
+    routes
+    (friend/wrap-authorize routes #{::user})))
+
+(defroutes topic-routes
+  (GET "/" [] topics/index)
+  (POST "/" [] topics/create)
+  (POST "/:id/vote" [] topics/vote)
+  (DELETE "/" [] topics/delete)
+  (DELETE "/votes" [] topics/reset-votes))
 
 (defroutes app-routes
-  (GET "/" [] topics/index)
-  (POST "/topics" [] topics/create)
-  (POST "/topics/:id/vote" [] topics/vote)
-  (DELETE "/topics" [] topics/delete)
-  (DELETE "/topics/votes" [] topics/reset-votes)
+  (context "/topics" request (authorize-routes topic-routes))
+  (GET "/" [] (login/required))
   (GET "/logout" request (friend/logout* (response/redirect "/")))
   (route/resources "/")
   (route/not-found "Not Found"))
@@ -22,5 +32,8 @@
     (friend/authenticate
       app-routes
       {:allow-anon? true
-       :default-landing-uri "/"
-       :workflows [(openid/workflow :openid-uri "/login" :credential-fn identity)]})))
+       :default-landing-uri "/topics"
+       :workflows [(openid/workflow :openid-uri "/login"
+                                    :credential-fn #(assoc % :roles #{::user})
+                                    :login-failure-handler (fn [_] (response/redirect "/")))]})
+    ))
