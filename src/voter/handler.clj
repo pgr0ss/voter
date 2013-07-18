@@ -2,6 +2,8 @@
   (:use compojure.core)
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
+            [cemerick.friend :as friend]
+            [cemerick.friend.openid :as openid]
             [voter.controllers.topics :as topics]))
 
 (defroutes app-routes
@@ -14,4 +16,9 @@
   (route/not-found "Not Found"))
 
 (def app
-  (handler/site app-routes))
+  (handler/site
+    (friend/authenticate
+      app-routes
+      {:allow-anon? true
+       :default-landing-uri "/"
+       :workflows [(openid/workflow :openid-uri "/login" :credential-fn identity)]})))

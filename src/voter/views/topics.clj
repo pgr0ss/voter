@@ -4,7 +4,14 @@
   (:use hiccup.form)
   (:require [voter.models.topic :as topic]))
 
-(defn index []
+(defn- user [email]
+  (if email
+    [:h4 (str "Logged in as: " email)]
+    (form-to [:post "/login"]
+             [:input {:type "hidden" :name "identifier" :value "https://www.google.com/accounts/o8/id"}]
+             [:button.btn {:type "submit"} "Login with Google"])))
+
+(defn index [email]
   (html
     [:head
      [:meta {:charset "utf-8"}]
@@ -14,6 +21,7 @@
      [:link {:href "/css/bootstrap-responsive.min.css" :rel "stylesheet"}]]
     [:body
      [:div.container
+      (user email)
        [:h2 "List of Topics"]
        [:ul
         (for [topic (topic/all)]

@@ -2,6 +2,7 @@
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :dependencies [[org.clojure/clojure "1.5.1"]
+                 [com.cemerick/friend "0.1.5"]
                  [compojure "1.1.5"]
                  [hiccup "1.0.3"]
                  [korma "0.3.0-RC5"]

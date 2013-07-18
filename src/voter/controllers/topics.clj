@@ -1,10 +1,13 @@
 (ns voter.controllers.topics
-  (:require [ring.util.response :as response]
+  (:require [cemerick.friend :as friend]
+            [ring.util.response :as response]
             [voter.models.topic :as topic]
             [voter.views.topics :as views]))
 
 (defn index [request]
-  (views/index))
+  (let [auth (friend/current-authentication request)
+        email (:email auth)]
+  (views/index email)))
 
 (defn create [request]
   (let [topic-text (-> request :params :topic)]
