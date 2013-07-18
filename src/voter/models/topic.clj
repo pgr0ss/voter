@@ -1,33 +1,24 @@
-(ns voter.models.topic)
+(ns voter.models.topic
+  (:require [voter.db.config :as config])
+  (:use korma.core))
 
-(def topics-by-id (atom {}))
-(def topic-id-counter (atom 0))
+(config/setup-korma)
+
+(defentity topics)
 
 (defn all []
-  (vec (reverse (vals @topics-by-id))))
+  (select topics (order :id)))
 
 (defn create! [text]
-  (let [id (swap! topic-id-counter inc)
-        topic {:id id :text text :votes 1}]
-    (swap! topics-by-id assoc id topic)
-    topic))
+  (insert topics (values {:text text})))
 
 (defn delete-all! []
-  (reset! topics-by-id {}))
-
-(defn reset-id-counter-for-testing! []
-  (reset! topic-id-counter 0))
-
-(defn- reset-votes [topics-map]
-  (into {} (map (fn [[id topic]] [id (assoc topic :votes 0)]) topics-map)))
+  (delete topics))
 
 (defn reset-votes! []
-  (swap! topics-by-id reset-votes))
-
-(defn- increment-vote [topics-map id]
-  (let [topic (get topics-map id)
-        current-votes (:votes topic)]
-    (assoc topics-map id (assoc topic :votes (inc current-votes)))))
+  (update topics (set-fields {:votes 0})))
 
 (defn vote! [topic-id]
-  (swap! topics-by-id increment-vote topic-id))
+  (update topics
+    (set-fields {:votes (raw "votes + 1")})
+    (where {:id topic-id})))

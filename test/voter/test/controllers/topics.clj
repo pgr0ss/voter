@@ -5,7 +5,8 @@
   (:require [voter.test.helpers :as helpers]
             [voter.models.topic :as topic]))
 
-(use-fixtures :each helpers/clear-topics)
+(use-fixtures :once helpers/clear-topics)
+(use-fixtures :each helpers/wrap-test-in-transaction)
 
 (deftest index
   (let [response (app (request :get "/"))]
@@ -16,11 +17,11 @@
   (let [response (app (request :post "/topics" {:topic "topic one"}))]
     (is (= (:status response) 302))
     (is (= (get (:headers response) "Location") "/"))
-    (is (= [{:id 1 :text "topic one" :votes 1}] (topic/all)))))
+    (is (= ["topic one"] (map :text (topic/all))))))
 
 (deftest vote
-  (topic/create! "one")
-  (let [response (app (request :post (str "/topics/1/vote")))]
+  (let [topic (topic/create! "one")
+        response (app (request :post (str "/topics/" (:id topic) "/vote")))]
     (is (= (:status response) 302))
     (is (= (get (:headers response) "Location") "/"))
     (is (= 2 (:votes (first (topic/all)))))))

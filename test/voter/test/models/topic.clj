@@ -3,22 +3,26 @@
   (:require [voter.test.helpers :as helpers]
             [voter.models.topic :as topic]))
 
-(use-fixtures :each helpers/clear-topics)
+(use-fixtures :once helpers/clear-topics)
+(use-fixtures :each helpers/wrap-test-in-transaction)
+
+(defn- remove-id [topic]
+  (dissoc topic :id))
 
 (deftest create
   (is (= [] (topic/all)))
   (topic/create! "topic one")
-  (is (= [{:id 1 :text "topic one" :votes 1}] (topic/all)))
+  (is (= [{:text "topic one" :votes 1}] (map remove-id (topic/all))))
   (topic/create! "topic two")
-  (is (= [{:id 1 :text "topic one" :votes 1}, 
-          {:id 2 :text "topic two" :votes 1}]
-         (topic/all))))
+  (is (= [{:text "topic one" :votes 1},
+          {:text "topic two" :votes 1}]
+         (map remove-id (topic/all)))))
 
 (deftest vote
-  (topic/create! "topic one")
-  (is (= [{:id 1 :text "topic one" :votes 1}] (topic/all)))
-  (topic/vote! 1)
-  (is (= [{:id 1 :text "topic one" :votes 2}] (topic/all))))
+  (let [topic (topic/create! "topic one")]
+    (is (= [{:text "topic one" :votes 1}] (map remove-id (topic/all))))
+    (topic/vote! (:id topic))
+    (is (= [{:text "topic one" :votes 2}] (map remove-id (topic/all))))))
 
 (deftest delete-all
   (topic/create! "one")
