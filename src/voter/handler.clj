@@ -4,6 +4,7 @@
             [compojure.route :as route]
             [cemerick.friend :as friend]
             [cemerick.friend.openid :as openid]
+            [ring.util.response :as response]
             [voter.controllers.topics :as topics]))
 
 (defroutes app-routes
@@ -12,6 +13,7 @@
   (POST "/topics/:id/vote" [] topics/vote)
   (DELETE "/topics" [] topics/delete)
   (DELETE "/topics/votes" [] topics/reset-votes)
+  (GET "/logout" request (friend/logout* (response/redirect "/")))
   (route/resources "/")
   (route/not-found "Not Found"))
 

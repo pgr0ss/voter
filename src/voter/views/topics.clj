@@ -6,38 +6,40 @@
 
 (defn- user [email]
   (if email
-    [:h4 (str "Logged in as: " email)]
+    [:h4 (str "Logged in as: " email)
+     [:a.btn {:href "/logout"} "Logout"]]
     (form-to [:post "/login"]
              [:input {:type "hidden" :name "identifier" :value "https://www.google.com/accounts/o8/id"}]
              [:button.btn {:type "submit"} "Login with Google"])))
 
 (defn index [email]
   (html
-    [:head
-     [:meta {:charset "utf-8"}]
-     [:title "Voter"]
-     [:meta {:viewport "width=device-width, initial-scale=1.0"}]
-     [:link {:href "/css/bootstrap.min.css" :rel "stylesheet"}]
-     [:link {:href "/css/bootstrap-responsive.min.css" :rel "stylesheet"}]]
-    [:body
-     [:div.container
-      (user email)
-       [:h2 "List of Topics"]
-       [:ul
-        (for [topic (topic/all)]
-          (let [{:keys [id text votes]} topic]
-            [:li (format "%s (votes: %s)" text votes)
-             (form-to [:post (format "/topics/%s/vote" id)]
-                      [:button.btn {:type "submit"} "Vote"])]))]
-       (form-to [:post "/topics"]
-        [:fieldset
-         [:legend "Enter A New Topic:"]
-         (label "topic" "Topic:")
-         (text-field "topic")
-         [:button.btn {:type "submit"} "Add"]])
-       (form-to [:delete "/topics"]
+    [:html
+     [:head
+      [:meta {:charset "utf-8"}]
+      [:title "Voter"]
+      [:meta {:viewport "width=device-width, initial-scale=1.0"}]
+      [:link {:href "/css/bootstrap.min.css" :rel "stylesheet"}]
+      [:link {:href "/css/bootstrap-responsive.min.css" :rel "stylesheet"}]]
+     [:body
+      [:div.container
+       (user email)
+        [:h2 "List of Topics"]
+        [:ul
+         (for [topic (topic/all)]
+           (let [{:keys [id text votes]} topic]
+             [:li (format "%s (votes: %s)" text votes)
+              (form-to [:post (format "/topics/%s/vote" id)]
+                       [:button.btn {:type "submit"} "Vote"])]))]
+        (form-to [:post "/topics"]
          [:fieldset
-          [:button.btn {:type "submit"} "Delete All Topics"]])
-      (form-to [:delete "/topics/votes"]
-         [:fieldset
-          [:button.btn {:type "submit"} "Reset Votes"]])]]))
+          [:legend "Enter A New Topic:"]
+          (label "topic" "Topic:")
+          (text-field "topic")
+          [:button.btn {:type "submit"} "Add"]])
+        (form-to [:delete "/topics"]
+          [:fieldset
+           [:button.btn {:type "submit"} "Delete All Topics"]])
+       (form-to [:delete "/topics/votes"]
+          [:fieldset
+           [:button.btn {:type "submit"} "Reset Votes"]])]]]))
