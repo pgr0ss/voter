@@ -1,10 +1,12 @@
 (ns voter.db.migrate
-  (:require [ragtime.core]
+  (:require [clojure.string :as string]
+            [ragtime.core]
             [ragtime.sql.database]
             [ragtime.sql.files]
             [voter.db.config :as config]))
 
 (defn -main []
-  (ragtime.core/migrate-all
-       (ragtime.core/connection config/db-connection-string)
-       (ragtime.sql.files/migrations)))
+  (let [db-url (str "jdbc:" (string/replace-first config/db-connection-string "postgres:" "postgresql:"))]
+    (ragtime.core/migrate-all
+      (ragtime.core/connection db-url)
+      (ragtime.sql.files/migrations))))

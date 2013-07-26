@@ -4,6 +4,7 @@
             [compojure.route :as route]
             [cemerick.friend :as friend]
             [cemerick.friend.openid :as openid]
+            [ring.adapter.jetty :as jetty]
             [ring.util.response :as response]
             [voter.controllers.topics :as topics]
             [voter.views.login :as login]))
@@ -35,5 +36,8 @@
        :default-landing-uri "/topics"
        :workflows [(openid/workflow :openid-uri "/login"
                                     :credential-fn #(assoc % :roles #{::user})
-                                    :login-failure-handler (fn [_] (response/redirect "/")))]})
-    ))
+                                    :login-failure-handler (fn [_] (response/redirect "/")))]})))
+
+(defn -main []
+  (let [port (Integer/parseInt (or (System/getenv "PORT") "8080"))]
+    (jetty/run-jetty app {:port port :join? false})))
