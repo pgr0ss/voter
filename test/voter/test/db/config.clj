@@ -9,5 +9,7 @@
 (deftest db-url->korma-map
   (is (= {:user nil :password nil :host "localhost" :port "5432" :db "voter"}
          (config/db-url->korma-map "postgresql://localhost/voter")))
+  (is (= {:user nil :password nil :host "localhost" :port "5432" :db "voter"}
+         (config/db-url->korma-map "jdbc:postgresql://localhost/voter")))
   (is (= {:user "myuser" :password "mypass" :host "my-host" :port "5432" :db "mydb"}
          (config/db-url->korma-map "postgres://myuser:mypass@my-host:5432/mydb"))))

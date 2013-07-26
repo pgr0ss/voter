@@ -12,7 +12,7 @@
       (str "jdbc:" with-postgresql))))
 
 (defn db-url->korma-map [url]
-  (let [uri (java.net.URI. url)
+  (let [uri (java.net.URI. (string/replace-first url "jdbc:" ""))
         db (string/replace-first (.getPath uri) #"/" "")
         raw-port (.getPort uri)
         port (if (< raw-port 0)
