@@ -5,7 +5,13 @@
 (def db-connection-string (or (System/getenv "DATABASE_URL")
                               "postgres://localhost/voter"))
 
-(defn db-url->map [url]
+(defn db-url->jdbc-url [url]
+  (let [with-postgresql (string/replace-first url "postgres:" "postgresql:")]
+    (if (.startsWith with-postgresql "jdbc")
+      with-postgresql
+      (str "jdbc:" with-postgresql))))
+
+(defn db-url->korma-map [url]
   (let [uri (java.net.URI. url)
         db (string/replace-first (.getPath uri) #"/" "")
         raw-port (.getPort uri)
@@ -23,4 +29,4 @@
      :db db}))
 
 (defn setup-korma []
-  (defdb korma-db (postgres (db-url->map db-connection-string))))
+  (defdb korma-db (postgres (db-url->korma-map db-connection-string))))

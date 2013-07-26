@@ -6,7 +6,6 @@
             [voter.db.config :as config]))
 
 (defn -main []
-  (let [db-url (str "jdbc:" (string/replace-first config/db-connection-string "postgres:" "postgresql:"))]
-    (ragtime.core/migrate-all
-      (ragtime.core/connection db-url)
-      (ragtime.sql.files/migrations))))
+  (ragtime.core/migrate-all
+    (ragtime.core/connection (config/db-url->jdbc-url config/db-connection-string))
+    (ragtime.sql.files/migrations)))
