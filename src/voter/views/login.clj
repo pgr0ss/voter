@@ -1,24 +1,19 @@
 (ns voter.views.login
+  (:require [voter.views.layout :as layout])
   (:use hiccup.core)
   (:use hiccup.element)
   (:use hiccup.form))
 
+(defn login-button []
+  (form-to [:post "/login"]
+           [:input {:type "hidden" :name "identifier" :value "https://www.google.com/accounts/o8/id"}]
+           [:button.btn {:type "submit"} "Login with Google"]))
+
 (defn required []
-  (html
-    [:html
-     [:head
-      [:meta {:charset "utf-8"}]
-      [:title "Voter"]
-      [:meta {:viewport "width=device-width, initial-scale=1.0"}]
-      [:link {:href "/css/bootstrap.min.css" :rel "stylesheet"}]
-      [:link {:href "/css/bootstrap-responsive.min.css" :rel "stylesheet"}]]
-     [:body
-      [:div.container
-       (form-to [:post "/login"]
-                [:input {:type "hidden" :name "identifier" :value "https://www.google.com/accounts/o8/id"}]
-                [:button.btn {:type "submit"} "Login with Google"])]]]))
+  (layout/layout
+    (login-button)))
 
 (defn unauthorized []
-  (html
-    [:html
-     [:p "Unauthorized"]]))
+  (layout/layout
+    [:p "You authenticated with a google email address that is not in the list of allowed email addresses."]
+    (login-button)))
