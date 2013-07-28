@@ -17,3 +17,8 @@
        (form-to [:post "/login"]
                 [:input {:type "hidden" :name "identifier" :value "https://www.google.com/accounts/o8/id"}]
                 [:button.btn {:type "submit"} "Login with Google"])]]]))
+
+(defn unauthorized []
+  (html
+    [:html
+     [:p "Unauthorized"]]))

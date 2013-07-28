@@ -14,7 +14,6 @@
 
 (use-fixtures :each setup)
 
-
 (deftest index
   (let [response (app (request :get "/topics"))]
     (is (= (:status response) 200))
